@@ -2,12 +2,13 @@
 
 #ifndef INCLUDE_MATRIX_HPP_
 #define INCLUDE_MATRIX_HPP_
-#include <type_traits>
-#include <limits>
 #include <math.h>
 #include <stdio.h>
 
-template<class T>
+#include <limits>
+#include <type_traits>
+
+template <class T>
 class Matrix {
   int rows;     //строки
   int columns;  //столбцы
@@ -67,8 +68,16 @@ class Matrix {
   friend bool operator==(const Matrix<v>& s1, const Matrix<v>& s2);
 
   template <class v>
-  friend  bool operator != (const Matrix<v>&s1, const Matrix<v>&s2);
+  friend bool operator!=(const Matrix<v>& s1, const Matrix<v>& s2);
 };
+
+//конструктор без параметров
+template <class T>
+Matrix<T>::Matrix() {
+  rows = 0;
+  columns = 0;
+  m = nullptr;
+}
 
 //конструктор создания объекта
 template <class T>
@@ -85,7 +94,6 @@ Matrix<T>::Matrix(int rows, int columns) {
     }
   }
 }
-
 
 //конструктор копирования марицы
 template <class T>
@@ -106,7 +114,7 @@ Matrix<T>::Matrix(const Matrix<T>& s) {
   }
 }
 
-template<class T>
+template <class T>
 Matrix<T>::~Matrix() {
   if (m != nullptr) {
     for (int i = 0; i < rows; i++) {
@@ -117,17 +125,23 @@ Matrix<T>::~Matrix() {
 }
 
 //инты
-template<class T>
-int Matrix<T>::get_rows() const { return rows; }
-template<class T>
-int Matrix<T>::get_columns() const { return columns; }
+template <class T>
+int Matrix<T>::get_rows() const {
+  return rows;
+}
+template <class T>
+int Matrix<T>::get_columns() const {
+  return columns;
+}
 
 //лонг
-template<class T>
-size_t Matrix<T>::Rows() const { return rows; }
+template <class T>
+size_t Matrix<T>::Rows() const {
+  return rows;
+}
 
 //перегрузка операции присваивание
-template<class T>
+template <class T>
 Matrix<T>& Matrix<T>::operator=(const Matrix<T>& s) {
   for (int i = 0; i < this->rows; ++i) {
     delete[] m[i];
@@ -147,18 +161,17 @@ Matrix<T>& Matrix<T>::operator=(const Matrix<T>& s) {
   return *this;
 }
 
-
 //операция сложения матриц
 template <class T>
 Matrix<T> Matrix<T>::operator+(const Matrix<T>& s2) {
-  Matrix<T> s1(rows, columns); //сумма таблиц
-  for(int i=0; i<rows; ++i){
-    for (int j=0; j<columns; ++j){
-      s1[i][j]=m[i][j];
+  Matrix<T> s1(rows, columns);  //сумма таблиц
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < columns; ++j) {
+      s1[i][j] = m[i][j];
     }
   }
   if (is_comparible(s1, s2)) {
-    Matrix<T> new_matrix(rows, columns);// можно ли сложить
+    Matrix<T> new_matrix(rows, columns);  // можно ли сложить
     new_matrix = Matrix(s1.get_rows(),
                         s1.get_columns());  //создали матрицу нужного размера
     for (int i = 0; i < s1.get_rows(); ++i) {
@@ -175,14 +188,14 @@ Matrix<T> Matrix<T>::operator+(const Matrix<T>& s2) {
 //операция вычитание матриц
 template <class T>
 Matrix<T> Matrix<T>::operator-(const Matrix<T>& s2) {
-  Matrix<T> s1(rows, columns); //сумма таблиц
-  for(int i=0; i<rows; ++i){
-    for (int j=0; j<columns; ++j){
-      s1[i][j]=m[i][j];
+  Matrix<T> s1(rows, columns);  //сумма таблиц
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < columns; ++j) {
+      s1[i][j] = m[i][j];
     }
   }
   if (is_comparible(s1, s2)) {
-    Matrix<T> new_matrix(rows, columns);// можно ли сложить
+    Matrix<T> new_matrix(rows, columns);  // можно ли сложить
     new_matrix = Matrix(s1.get_rows(),
                         s1.get_columns());  //создали матрицу нужного размера
     for (int i = 0; i < s1.get_rows(); ++i) {
@@ -206,9 +219,9 @@ T* Matrix<T>::operator[](int index) const {  //не изменяет значе�
 template <class T>
 Matrix<T> Matrix<T>::operator*(const Matrix<T>& s2) {
   Matrix<T> s1(rows, columns);
-  for (int i=0; i<rows; ++i){
-    for (int j=0; j<rows; ++j){
-      s1[i][j]=m[i][j];
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < rows; ++j) {
+      s1[i][j] = m[i][j];
     }
   }
   if (s1.columns == s2.rows) {
@@ -305,18 +318,15 @@ Matrix<T> Matrix<T>::transp(const Matrix<T>& s) {
   return newm;
 }
 
-
 //умножение матрицы на число
 template <class T>
-void  Matrix<T>::mult(const T& alfa, Matrix<T>& s) {
+void Matrix<T>::mult(const T& alfa, Matrix<T>& s) {
   for (int i = 0; i < s.rows; ++i) {
     for (int j = 0; j < s.columns; ++j) {
       s[i][j] *= alfa;
     }
   }
 }
-
-
 
 //нахождение обратной матрицы
 template <class T>
@@ -344,12 +354,12 @@ Matrix<T> Matrix<T>::Inverse() {
 //сравнение матриц
 template <class T>
 bool operator==(const Matrix<T>& s1, const Matrix<T>& s2) {
-  if (s1.get_rows()==s2.get_rows()&&s1.get_columns()==s2.get_columns()) {
-
-    if(std::is_floating_point<T>::value){
+  if (s1.get_rows() == s2.get_rows() && s1.get_columns() == s2.get_columns()) {
+    if (std::is_floating_point<T>::value) {
       for (int i = 0; i < s1.rows; ++i) {
         for (int j = 0; j < s1.columns; ++j) {
-          if (std::fabs(s1[i][j] - s2[i][j]) > std::numeric_limits<float>::epsilon()) return false;
+          if (fabs(s1[i][j] - s2[i][j]) > std::numeric_limits<float>::epsilon())
+            return false;
         }
       }
     }
@@ -364,30 +374,12 @@ bool operator==(const Matrix<T>& s1, const Matrix<T>& s2) {
     return false;
 }
 
-
-
-template <>
-bool operator==(const Matrix<double>& s1, const Matrix<double>& s2) {
-  if (s1.get_rows()==s2.get_rows()&&s1.get_columns()==s2.get_columns()) {
-    for (int i = 0; i < s1.get_rows(); ++i) {
-      for (int j = 0; j < s1.get_columns(); ++j) {
-
-        if (std::fabs(s1[i][j] - s2[i][j]) >
-            std::numeric_limits<double>::epsilon())
-          return false;
-
-      }
-    }
-    return true;
-  }
-  else return false;
-}
-
-
 template <class T>
-bool operator != (const Matrix<T>&s1, const Matrix<T>&s2) {
-  if(s1==s2) return false;
-  else return true;
+bool operator!=(const Matrix<T>& s1, const Matrix<T>& s2) {
+  if (s1 == s2)
+    return false;
+  else
+    return true;
 }
 
-#endif // INCLUDE_MATRIX_HPP_
+#endif  // INCLUDE_MATRIX_HPP_
