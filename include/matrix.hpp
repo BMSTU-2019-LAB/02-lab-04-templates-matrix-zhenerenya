@@ -362,6 +362,7 @@ bool operator==(const Matrix<T>& s1, const Matrix<T>& s2) {
             return false;
         }
       }
+      return true;
     }
 
     for (int i = 0; i < s1.rows; ++i) {
