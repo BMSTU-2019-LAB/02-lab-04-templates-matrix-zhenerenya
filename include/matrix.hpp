@@ -217,33 +217,20 @@ T* Matrix<T>::operator[](int index) const {  //не изменяет значе�
 
 //умножение матриц
 template <class T>
-Matrix<T> Matrix<T>::operator*(const Matrix<T>& s2) {
-  Matrix<T> s1(rows, columns);
-  for (int i = 0; i < rows; ++i) {
-    for (int j = 0; j < rows; ++j) {
-      s1[i][j] = m[i][j];
+Matrix<T> Matrix<T>::operator *(const Matrix& m2){
+    if (this->get_columns() != m2.get_rows()){
+        Matrix<T> res(0, 0);
+        return res;
     }
-  }
-  if (s1.columns == s2.rows) {
-    Matrix<T> new_matrix(rows, columns);
-    new_matrix = Matrix(s1.rows, s2.columns);
-    int index_row = 0;
-    while (index_row < s1.rows) {
-      int index_column = 0;
-      while (index_column < s2.columns) {
-        T sum = 0;
-        for (int k = 0; k < s1.columns; ++k) {
-          sum += s1[index_row][k] * s2[k][index_column];
+    Matrix<T> res(rows, m2.get_columns());
+    for (int i = 0 ; i < res.get_rows(); i++){
+        for (int j = 0 ; j < res.get_columns(); j++){
+            for (int k = 0 ; k < columns ; k++){
+                res[i][j] += (*this)[i][k] * m2[k][j];
+            }
         }
-        new_matrix[index_row][index_column] = sum;
-        index_column++;
-      }
-      index_row++;
     }
-    return new_matrix;
-  } else {
-    return {};
-  }
+    return res;
 }
 
 //опредилитель
