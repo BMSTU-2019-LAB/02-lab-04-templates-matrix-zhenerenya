@@ -241,28 +241,27 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& s2) {
       index_row++;
     }
     return new_matrix;
-  } else
+  } else {
     return {};
+  }
 }
 
 //опредилитель
 template <class T>
 T Matrix<T>::determinant(const Matrix<T>& s) {
   T det = 0;
-  if (s.columns == 1)
+  if (s.columns == 1) {
     det = s[0][0];
-  else {
-    if (s.columns == 2)
+  } else {
+    if (s.columns == 2) {
       det = s[0][0] * s[1][1] - s[0][1] * s[1][0];
-    else {
-
+    } else {
         for (int j = 0; j < s.columns; ++j) {
-          if ((j % 2)==1)
-            det +=s[0][j]* (-1) * determinant(deleted(s, 0, j));
+          if ((j % 2) == 1)
+            det += s[0][j]* (-1) * determinant(deleted(s, 0, j));
           else
             det += s[0][j]*determinant(deleted(s, 0, j));
         }
-
     }
   }
   return det;
@@ -347,18 +346,21 @@ Matrix<T> Matrix<T>::Inverse() {
     new_matrix = transp(minors(new_matrix));
      mult(1. / det, new_matrix);
     return new_matrix;
-  } else
+  } else {
     return {};
+  }
 }
 
 //сравнение матриц
 template <class T>
 bool operator==(const Matrix<T>& s1, const Matrix<T>& s2) {
-  if (s1.get_rows() == s2.get_rows() && s1.get_columns() == s2.get_columns()) {
+  if (s1.get_rows() == s2.get_rows() &&
+      s1.get_columns() == s2.get_columns()) {
     if (std::is_floating_point<T>::value) {
       for (int i = 0; i < s1.rows; ++i) {
         for (int j = 0; j < s1.columns; ++j) {
-          if (fabs(s1[i][j] - s2[i][j]) > std::numeric_limits<double>::epsilon())
+          if (fabs(s1[i][j] - s2[i][j]) > 
+              std::numeric_limits<double>::epsilon())
             return false;
         }
       }
@@ -371,8 +373,9 @@ bool operator==(const Matrix<T>& s1, const Matrix<T>& s2) {
       }
     }
     return true;
-  } else
+  } else {
     return false;
+  }
 }
 
 template <class T>
