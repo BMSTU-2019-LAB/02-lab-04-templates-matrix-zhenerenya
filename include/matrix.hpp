@@ -359,7 +359,7 @@ bool operator==(const Matrix<T>& s1, const Matrix<T>& s2) {
     if (std::is_floating_point<T>::value) {
       for (int i = 0; i < s1.rows; ++i) {
         for (int j = 0; j < s1.columns; ++j) {
-          if (fabs(s1[i][j] - s2[i][j]) > 
+          if (fabs(s1[i][j] - s2[i][j]) >
               std::numeric_limits<double>::epsilon())
             return false;
         }
