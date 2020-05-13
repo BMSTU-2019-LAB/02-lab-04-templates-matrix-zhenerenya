@@ -49,7 +49,7 @@ class Matrix {
   T determinant(const Matrix<T>& s);
 
   //вычеркивание срок
-  Matrix<T> deleted(const Matrix<T>& s, int& x, int& y);
+  Matrix<T> deleted(const Matrix<T>& s, int x, int y);
 
   //матрица алгебраических дополнений
   Matrix<T> minors(const Matrix<T>& s);
@@ -255,14 +255,14 @@ T Matrix<T>::determinant(const Matrix<T>& s) {
     if (s.columns == 2)
       det = s[0][0] * s[1][1] - s[0][1] * s[1][0];
     else {
-      for (int i = 0; i < s.columns; ++i) {
+
         for (int j = 0; j < s.columns; ++j) {
-          if ((i + j) % 2)
-            det += (-1) * determinant(deleted(s, i, j));
+          if ((j % 2)==1)
+            det +=s[0][j]* (-1) * determinant(deleted(s, 0, j));
           else
-            det = determinant(deleted(s, i, j));
+            det += s[0][j]*determinant(deleted(s, 0, j));
         }
-      }
+
     }
   }
   return det;
@@ -270,7 +270,7 @@ T Matrix<T>::determinant(const Matrix<T>& s) {
 
 //вычеркивание срок
 template <class T>
-Matrix<T> Matrix<T>::deleted(const Matrix<T>& s, int& x, int& y) {
+Matrix<T> Matrix<T>::deleted(const Matrix<T>& s, int x, int y) {
   Matrix<T> new_matrix(s.rows - 1, s.columns - 1);
   int new_rows = 0;
   int new_columns = 0;
@@ -296,9 +296,9 @@ Matrix<T> Matrix<T>::minors(const Matrix<T>& s) {
   matrix_minors = Matrix(s.rows, s.columns);
   for (int i = 0; i < s.rows; i++) {
     for (int j = 0; j < s.columns; j++) {
-      if ((i + j) % 2)
+      if ((i + j) % 2 ==1)
         matrix_minors[i][j] = (-1) * determinant(deleted(s, i, j));
-      else if ((i + j) % 2)
+      else
         matrix_minors[i][j] = determinant(deleted(s, i, j));
     }
   }
@@ -309,10 +309,10 @@ Matrix<T> Matrix<T>::minors(const Matrix<T>& s) {
 template <class T>
 Matrix<T> Matrix<T>::transp(const Matrix<T>& s) {
   Matrix<T> newm(rows, columns);
-  for (int i = 0; i < rows / 2; i++) {
-    for (int j = 0; j < rows / 2; j++) {
-      newm[rows - 1 - i][rows - 1 - j] = s[i][j];
-      newm[i][j] = s[rows - 1 - i][rows - 1 - j];
+  for (int i = 0; i < rows ; i++) {
+    for (int j = 0; j < rows ; j++) {
+      newm[j][i] = s[i][j];
+      newm[i][j] = s[j][i];
     }
   }
   return newm;
@@ -345,7 +345,7 @@ Matrix<T> Matrix<T>::Inverse() {
     }
     int det = determinant(new_matrix);
     new_matrix = transp(minors(new_matrix));
-    mult(1 / det, new_matrix);
+     mult(1. / det, new_matrix);
     return new_matrix;
   } else
     return {};
@@ -358,7 +358,7 @@ bool operator==(const Matrix<T>& s1, const Matrix<T>& s2) {
     if (std::is_floating_point<T>::value) {
       for (int i = 0; i < s1.rows; ++i) {
         for (int j = 0; j < s1.columns; ++j) {
-          if (fabs(s1[i][j] - s2[i][j]) > std::numeric_limits<float>::epsilon())
+          if (fabs(s1[i][j] - s2[i][j]) > std::numeric_limits<double>::epsilon())
             return false;
         }
       }
